@@ -1,39 +1,19 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>KART TEST</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>Kart</title>
   <style>
     body {
       margin: 0;
       overflow: hidden;
-      background: #111;
-      touch-action: none;
-    }
-    #ui {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      display: flex;
-      gap: 10px;
-    }
-    button {
-      width: 60px;
-      height: 60px;
-      font-size: 20px;
     }
   </style>
 </head>
 <body>
 
-<canvas id="game"></canvas>
+  <!-- ⚠️ 무조건 type="module" -->
+  <script type="module" src="./js/main.js"></script>
 
-<div id="ui">
-  <button id="left">◀</button>
-  <button id="right">▶</button>
-</div>
-
-<script src="main.js"></script>
 </body>
 </html>
