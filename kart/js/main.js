@@ -28,6 +28,9 @@ const cube = new THREE.Mesh(
 );
 scene.add(cube);
 
+camera.position.z = 5;
+
+
 /* 카메라 */
 camera.position.z = 5;
 
@@ -46,6 +49,7 @@ window.addEventListener("resize", () => {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
 
 
 
