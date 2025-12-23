@@ -1,87 +1,81 @@
-// ===== 캔버스 세팅 =====
-alert("main.js 로드됨");
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
 
-function resize() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener("resize", resize);
+/* ===== 기본 ===== */
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x111111);
 
-// ===== 카트 상태 =====
-const kart = {
-  x: canvas.width / 2,
-  y: canvas.height / 2,
-  angle: 0,
-  speed: 0,
-};
+const camera = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000
+);
 
-let left = false;
-let right = false;
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
-// ===== 입력 =====
+/* ===== 조명 ===== */
+scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(5, 10, 5);
+scene.add(light);
+
+/* ===== 바닥 ===== */
+const floor = new THREE.Mesh(
+  new THREE.PlaneGeometry(200, 200),
+  new THREE.MeshStandardMaterial({ color: 0x444444 })
+);
+floor.rotation.x = -Math.PI / 2;
+scene.add(floor);
+
+/* ===== 카트 ===== */
+const kart = new THREE.Mesh(
+  new THREE.BoxGeometry(2, 1, 3),
+  new THREE.MeshStandardMaterial({ color: 0xff3333 })
+);
+kart.position.y = 0.5;
+scene.add(kart);
+
+/* ===== 카메라 ===== */
+camera.position.set(0, 6, 10);
+camera.lookAt(kart.position);
+
+/* ===== 입력 ===== */
+const input = { forward: false, left: false, right: false };
+
 window.addEventListener("keydown", e => {
-  if (e.key === "ArrowLeft") left = true;
-  if (e.key === "ArrowRight") right = true;
+  if (e.key === "w") input.forward = true;
+  if (e.key === "a") input.left = true;
+  if (e.key === "d") input.right = true;
 });
 window.addEventListener("keyup", e => {
-  if (e.key === "ArrowLeft") left = false;
-  if (e.key === "ArrowRight") right = false;
+  if (e.key === "w") input.forward = false;
+  if (e.key === "a") input.left = false;
+  if (e.key === "d") input.right = false;
 });
 
-// 모바일
-document.getElementById("left").ontouchstart = () => left = true;
-document.getElementById("left").ontouchend = () => left = false;
-document.getElementById("right").ontouchstart = () => right = true;
-document.getElementById("right").ontouchend = () => right = false;
+/* ===== 루프 ===== */
+function animate() {
+  requestAnimationFrame(animate);
 
-// ===== 게임 루프 =====
-function update() {
-  // 조향
-  if (left) kart.angle -= 0.05;
-  if (right) kart.angle += 0.05;
+  if (input.forward) kart.translateZ(-0.2);
+  if (input.left) kart.rotation.y += 0.04;
+  if (input.right) kart.rotation.y -= 0.04;
 
-  // 자동 전진
-  kart.speed = 4;
+  camera.position.lerp(
+    kart.position.clone().add(new THREE.Vector3(0, 6, 10)),
+    0.1
+  );
+  camera.lookAt(kart.position);
 
-  kart.x += Math.cos(kart.angle) * kart.speed;
-  kart.y += Math.sin(kart.angle) * kart.speed;
-
-  // 화면 끝 처리
-  if (kart.x < 0) kart.x = canvas.width;
-  if (kart.x > canvas.width) kart.x = 0;
-  if (kart.y < 0) kart.y = canvas.height;
-  if (kart.y > canvas.height) kart.y = 0;
+  renderer.render(scene, camera);
 }
 
-// ===== 그리기 =====
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  ctx.save();
-  ctx.translate(kart.x, kart.y);
-  ctx.rotate(kart.angle);
-
-  // 카트 몸체
-  ctx.fillStyle = "orange";
-  ctx.fillRect(-20, -10, 40, 20);
-
-  // 앞 표시
-  ctx.fillStyle = "red";
-  ctx.fillRect(10, -5, 10, 10);
-
-  ctx.restore();
-}
-
-// ===== 루프 =====
-function loop() {
-  update();
-  draw();
-  requestAnimationFrame(loop);
-}
+animate();
 
 console.log("게임 실행됨");
 loop();
+
 
