@@ -1,44 +1,39 @@
 import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
 
-/* 기본 */
+/* 씬 */
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x222222);
+scene.background = new THREE.Color(0x000000);
 
+/* 카메라 */
 const camera = new THREE.PerspectiveCamera(
   75,
   window.innerWidth / window.innerHeight,
   0.1,
   1000
 );
+camera.position.z = 5;
 
-const renderer = new THREE.WebGLRenderer({ antialias: true });
+/* 렌더러 */
+const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 /* 조명 */
-scene.add(new THREE.AmbientLight(0xffffff, 0.8));
 const light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(5, 10, 5);
+light.position.set(3, 5, 3);
 scene.add(light);
 
-/* 큐브 (테스트용) */
+/* 큐브 */
 const cube = new THREE.Mesh(
   new THREE.BoxGeometry(1, 1, 1),
-  new THREE.MeshStandardMaterial({ color: 0xff0000 })
+  new THREE.MeshStandardMaterial({ color: 0x00ff00 })
 );
 scene.add(cube);
-
-camera.position.z = 5;
-
-
-/* 카메라 */
-camera.position.z = 5;
 
 /* 루프 */
 function animate() {
   requestAnimationFrame(animate);
   cube.rotation.y += 0.01;
-  cube.rotation.x += 0.01;
   renderer.render(scene, camera);
 }
 animate();
@@ -49,6 +44,7 @@ window.addEventListener("resize", () => {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
 
 
 
