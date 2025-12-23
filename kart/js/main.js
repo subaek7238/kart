@@ -1,4 +1,5 @@
 // ===== 캔버스 세팅 =====
+alert("main.js 로드됨");
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
@@ -83,3 +84,4 @@ function loop() {
 
 console.log("게임 실행됨");
 loop();
+
